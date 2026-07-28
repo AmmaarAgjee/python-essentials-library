@@ -58,12 +58,50 @@ def add_book(books):
 
 #Register a new member with an empty borrowed list
 def register_member(members):
-    pass
+    global next_member_number
+    print("\n--- register member ---")
+
+    name = input("Enter member name: ")
+
+    if name =="":
+        print("Member name cannot be empty.")
+        return
+
+    member_id = "M" + str(next_member_number)
+    members[member_id] = {
+        "name": name,
+        "borrowed": []
+    }
+
+    print(f"registered {member_id}: {name}")
 
 #One member borrows one book - enforces ALL rules, updates BOTH dicts
 def borrow_book(books, members):
-    pass
+    print("\n--- borrow book ---")
 
+    member_id = input("Enter member ID: ")
+    book_id = input("Enter book ID: ")
+
+    if member_id not in members:
+        print("Member ID not found.")
+        return
+    
+    if book_id not in books:
+        print("Book not found.")
+        return
+    
+    if books [book_id]["available"] <= 0:
+        print("No copies available.")
+        return
+
+    if book_id in members[member_id]["borrowed_books"]:
+        print("Member has already borrowed this book.")
+        return
+
+    members[member_id]["borrowed_books"].append(book_id)
+    books[book_id]["available"] -= 1
+    print(f"{members[member_id]['name']} borrowed {books[book_id]['title']}")
+    
 #One member returns one book - updates BOTH dicts
 def return_book(books, members):
     pass
@@ -104,10 +142,17 @@ while True:
     if choice == "1":
         add_book(books)
 
+    elif choice == "2":
+        register_member(members)
+
+    elif choice == "3":
+        borrow_book(books, members)
+
     elif choice == "8":
         print("Goodbye!")
         break
 
     else:
         print("I'm sorry, that option is not implemented. Please choose another option.")
+
 
