@@ -34,8 +34,17 @@ def add_book(books):
         print("Title and author cannot be empty.")
         return
 
-    book_id = "B" + str(next_book_number)
+    # check for existing book by same title and author (case-insensitive)
+    for book_id, book in books.items():
+        if (book["title"].lower() == title.lower() and
+            book["author"].lower() == author.lower()):
+            book["total"] += copies
+            book["available"] += copies
+            print(f"added {copies} more copies of {book_id}: {title} (now {book['total']})")
+            return
 
+    # add new book
+    book_id = "B" + str(next_book_number)
     books[book_id] = {
         "title": title,
         "author": author,
