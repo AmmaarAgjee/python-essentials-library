@@ -50,4 +50,21 @@ next_book_number = 1
 next_member_number = 1
 
 while True:
-    pass
+    print("\nLibrary Management System")
+    print("1. Add Book")
+    print("2. Register Member")
+    print("3. Borrow Book")
+    print("4. Return Book")
+    print("5. Search Catalogue")
+    print("6. Member Summary")
+    print("7. Library Report")
+    print("8. Exit")
+
+    choice = input("choose an option (1-8): ")
+
+    if choice == "8":
+        print("Goodbye!")
+        break
+    else:
+        print("I'm sorry, that option is not implemented. Please choose another option.")
+
