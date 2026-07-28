@@ -2,6 +2,9 @@
 #Ammaar Agjee
 
 #Returns (total_copies, copies_available) across the whole library as a tuple 
+from enum import member
+
+
 def library_totals(books):
     pass
 
@@ -70,13 +73,15 @@ def register_member(members):
     member_id = "M" + str(next_member_number)
     members[member_id] = {
         "name": name,
-        "borrowed": []
+        "borrowed_books": []
     }
 
     print(f"registered {member_id}: {name}")
 
+    next_member_number += 1
+
 #One member borrows one book - enforces ALL rules, updates BOTH dicts
-def borrow_book(books, members):
+def borrowed_books(books, members):
     print("\n--- borrow book ---")
 
     member_id = input("Enter member ID: ")
@@ -100,11 +105,32 @@ def borrow_book(books, members):
 
     members[member_id]["borrowed_books"].append(book_id)
     books[book_id]["available"] -= 1
+    books[book_id]["times_borrowed"] += 1
     print(f"{members[member_id]['name']} borrowed {books[book_id]['title']}")
-    
+
 #One member returns one book - updates BOTH dicts
 def return_book(books, members):
-    pass
+    print("\n--- return book ---")
+
+    member_id = input("Enter member ID: ")
+    book_id = input("Enter book ID: ")
+
+    if member_id not in members:
+        print("Member ID not found.")
+        return
+
+    if book_id not in books:
+        print("Book not found.")
+        return
+
+    if book_id not in members[member_id]["borrowed_books"]:
+        print("Member has not borrowed this book.")
+        return
+
+    members[member_id]["borrowed_books"].remove(book_id)
+    books[book_id]["available"] += 1
+    books[book_id]["times_borrowed"] -= 1
+    print(f"{members[member_id]['name']} returned {books[book_id]['title']}")
 
 #Case-insensitive keyword search over titles 
 def search_catalogue(books):
@@ -130,8 +156,8 @@ while True:
     print("\nLibrary Management System")
     print("1. Add Book")
     print("2. Register Member")
-    print("3. Borrow Book")
-    print("4. Return Book")
+    print("3. Borrow Books")
+    print("4. Return Books")
     print("5. Search Catalogue")
     print("6. Member Summary")
     print("7. Library Report")
@@ -146,7 +172,10 @@ while True:
         register_member(members)
 
     elif choice == "3":
-        borrow_book(books, members)
+       borrowed_books(books, members)
+
+    elif choice == "4":
+        return_book(books, members)
 
     elif choice == "8":
         print("Goodbye!")
