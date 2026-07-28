@@ -11,11 +11,41 @@ def most_borrowed(books):
 
 #Asks for a number of copies, validates with try-except, returns int or none 
 def read_valid_copies():
-    pass    
+    while True:
+        try:
+            copies = int(input("enter number of copies: "))   
+
+            if copies > 0:
+                return copies
+            else:
+                print("please enter a number greater than 0.")
+        except ValueError:
+            print("Valid integer. Please enter a whole number.")
 
 #Adds a new book or adds copies to an existing title by the same author
 def add_book(books):
-    pass
+    global next_book_number
+    print("\n--- add book ---")
+    title = input("Enter book title: ")
+    author = input("Enter author name: ")
+    copies = read_valid_copies()
+
+    if title == "" or author == "":
+        print("Title and author cannot be empty.")
+        return
+
+    book_id = "B" + str(next_book_number)
+
+    books[book_id] = {
+        "title": title,
+        "author": author,
+        "total": copies,
+        "available": copies,
+        "times_borrowed": 0
+    }
+
+    print(f"added {book_id}: {title} by {author} ({copies} copies)")
+    next_book_number += 1
 
 #Register a new member with an empty borrowed list
 def register_member(members):
@@ -62,9 +92,13 @@ while True:
 
     choice = input("choose an option (1-8): ")
 
-    if choice == "8":
+    if choice == "1":
+        add_book(books)
+
+    elif choice == "8":
         print("Goodbye!")
         break
+
     else:
         print("I'm sorry, that option is not implemented. Please choose another option.")
 
