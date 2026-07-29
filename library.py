@@ -2,15 +2,31 @@
 #Ammaar Agjee
 
 #Returns (total_copies, copies_available) across the whole library as a tuple 
-from enum import member
-
 
 def library_totals(books):
-    pass
+    total_copies = 0
+    copies_available = 0
+
+    for book in books.values():
+        total_copies += book["total"]
+        copies_available += book["available"]
+
+    return (total_copies, copies_available)
 
 #Returns the book ID of the most-borrowed book, or none if no books
 def most_borrowed(books):
-    pass
+    if not books:
+        return None
+
+    most_borrowed_book_id = None
+    highest = -1
+
+    for book_id, book in books.items():
+        if book["times_borrowed"] > highest:
+            highest = book["times_borrowed"]
+            most_borrowed_book_id = book_id
+
+    return most_borrowed_book_id
 
 #Asks for a number of copies, validates with try-except, returns int or none 
 def read_valid_copies():
@@ -23,7 +39,7 @@ def read_valid_copies():
             else:
                 print("please enter a number greater than 0.")
         except ValueError:
-            print("Valid integer. Please enter a whole number.")
+            print("invalid integer. Please enter a whole number.")
 
 #Adds a new book or adds copies to an existing title by the same author
 def add_book(books):
@@ -105,7 +121,6 @@ def borrowed_books(books, members):
 
     members[member_id]["borrowed_books"].append(book_id)
     books[book_id]["available"] -= 1
-    books[book_id]["times_borrowed"] += 1
     print(f"{members[member_id]['name']} borrowed {books[book_id]['title']}")
 
 #One member returns one book - updates BOTH dicts
@@ -134,15 +149,52 @@ def return_book(books, members):
 
 #Case-insensitive keyword search over titles 
 def search_catalogue(books):
-    pass
+    print("\n--- search catalogue ---")
+    keyword = input("Enter search keyword: ")
+    keyword_lower = keyword.lower()
+    found = False
+    for book_id, book in books.items():
+        if keyword_lower in book["title"].lower():
+            print(f"{book_id}: {book['title']} by {book['author']} ({book['available']}/{book['total']} available)")
+            found = True
+    
+    if not found:
+        print(f"No books found containing '{keyword}'.")
 
 #Prints one member with the TITLES of their borrowed books
 def member_summary(members, books):
-    pass
+    print("\n--- member summary ---")
+
+    member_id = input("Enter member ID: ")
+
+    if member_id not in members:
+        print("Member ID not found.")
+        return
+
+    print(f"{member_id}: {members[member_id]['name']}")
+
+    if not members[member_id]["borrowed_books"]:
+        print("No borrowed books.")
+        return
+
+    print("Borrowed books:")
+    for book_id in members[member_id]["borrowed_books"]:
+        print(f"- {book_id}: {books[book_id]['title']}")
 
 #Prints the whole-library report
 def library_report(books, members):
-    pass
+    print("\n--- library report ---")
+    total_copies, copies_available = library_totals(books)
+    print(f"Total copies: {total_copies}")
+    print(f"Available copies: {copies_available}")
+    print(f"Total members: {len(members)}")
+
+    most_borrowed_book_id = most_borrowed(books)
+    if most_borrowed_book_id is None:
+        print("Most borrowed book: None")
+    else:
+        most_borrowed_book = books[most_borrowed_book_id]
+        print(f"Most borrowed book: {most_borrowed_book_id}: {most_borrowed_book['title']} by {most_borrowed_book['author']} ({most_borrowed_book['times_borrowed']} times)")
 
 #---- Main Program ----
 
@@ -177,11 +229,21 @@ while True:
     elif choice == "4":
         return_book(books, members)
 
+    elif choice == "5":
+        search_catalogue(books)
+
+    elif choice == "6":
+        member_summary(members, books)
+
+    elif choice == "7":
+        library_report(books, members)
+
     elif choice == "8":
         print("Goodbye!")
         break
 
     else:
         print("I'm sorry, that option is not implemented. Please choose another option.")
+
 
 
