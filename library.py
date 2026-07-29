@@ -121,6 +121,7 @@ def borrowed_books(books, members):
 
     members[member_id]["borrowed_books"].append(book_id)
     books[book_id]["available"] -= 1
+    books[book_id]["times_borrowed"] += 1
     print(f"{members[member_id]['name']} borrowed {books[book_id]['title']}")
 
 #One member returns one book - updates BOTH dicts
